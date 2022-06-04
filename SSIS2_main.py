@@ -238,30 +238,31 @@ def search():
         return
 
     try:
-        y = str(query)
-        y = str(y.replace('-', ''))
-        query = int(y)
-        query = str(query)
-        if len(query) != 8:
+        if len(query) != 9:
             messagebox.showerror("Error", "ID No. must be exactly 8 numbers.\nEX: 2020-0001")
             return
-        else:
-            query = '%s-%s' % (query[:4], query[4:8])
+        #else:
+            #query = '%s-%s' % (query[:4], query[4:8])
     except ValueError:
         messagebox.showerror("Error", "Please enter only the ID No. to search for a student.")
+        return
 
+    row = db.search(query)
+    print(row[0])
+
+
+    if len(row) == 1:
+        row = row[0]
+        row = f"{str(row[0])},{row[1]},{row[2]},{row[3]},{row[4]},{row[5]}" 
+
+        view.delete(*view.get_children())
+        view.insert("", "end", values=(row.split(",")))
+        messagebox.showinfo("Success", "Student is found.")
+        return
+                #view.insert(END, row, str(""))
     else:
-        for row in db.search(idnumber.get()):
-            if query in row:
-                view.delete(*view.get_children())
-                view.insert("", "end", values=(row.split(",")))
-                messagebox.showinfo("Success", "Student is found.")
-                return
-            #view.insert(END, row, str(""))
-
-        else:
-            messagebox.showerror("Error", "Student does not exists.")
-            return
+        messagebox.showerror("Error", "Student does not exists.")
+        return
 
 #===================================================================Buttons==================================================================================
 #Add Button
