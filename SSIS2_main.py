@@ -18,14 +18,6 @@ course = StringVar()
 year = StringVar()
 gender = StringVar()
 
-def clear():  ## For clearing all entry
-    idnumber.set('')
-    name.set('')
-    course.set('')
-    year.set('')
-    gender.set('')
-
-clear()
 
 #====================================================================Display=====================================================================================
 #Frames
@@ -60,7 +52,7 @@ courseEntry.place(x=210, y=90)
 year1 = Label(content, text="Year :", fg="#23395d", bg="#98B6D4", font=("Roboto", 10, "bold"))
 year1.pack()
 year1.place(x=425, y=28)
-i = ["1st Year", "2nd Year", "3rd Year", "4th Year"]
+i = ["1st", "2nd", "3rd", "4th"]
 yearEntry = ttk.Combobox(content, font=("Roboto", 10), values=i)
 yearEntry.pack()
 yearEntry.place(x=490, y=27)
@@ -74,35 +66,32 @@ genderEntry.pack()
 genderEntry.place(x=490, y=55)
 
 #===================================================================Functions=================================================================================
-def fetchdata():
-    view.delete(*view.get_children())
-    count = 0
-    for row in db.fetch():
-        count += 1
-        view.insert("",0,values=(count,row[1],row[2],row[3],row[4],row[5]))
 
-def showall():
-    view.delete(*view.get_children())
-    for row in db.fetch():
-        view.insert("", END, values=row)
 
+def clear(): # Clears all the entries
     nameEntry.delete(0, END)
     idnumberEntry.delete(0, END)
     courseEntry.delete(0, END)
     yearEntry.delete(0, END)
     genderEntry.delete(0, END)
 
-def refresh():
-    for data in view.get_children():
-        view.delete(data)
 
-    for array in db.fetch():
-        view.insert(parent='', index='end', iid=array, text="", values=(array), tag="orow")
+clear()
 
+def fetchdata(): # Gets all the data
+    view.delete(*view.get_children())
+    count = 0
+    for row in db.fetch():
+        count += 1
+        view.insert("",0,values=(count,row[1],row[2],row[3],row[4],row[5]))
+
+def showall(): # Displays all the data and refreshes
+    view.delete(*view.get_children())
+    for row in db.fetch():
+        view.insert("", END, values=row)
     clear()
 
-
-def add():
+def add(): # Add a student
     a1 = idnumberEntry.get()
     a2 = nameEntry.get()
     a3 = courseEntry.get()
@@ -119,13 +108,12 @@ def add():
         a1 = int(y)
         a1 = str(a1)
         if len(a1) != 8:
-            messagebox.showerror("Error", "ID No. must be exactly 8 numbers.\nEX: 2020-0001")
+            messagebox.showerror("Error", "I.D. No. must be exactly 8 numbers.\n(Ex: 2020-1570)")
             return
         else:
             a1 = '%s-%s' % (a1[:4], a1[4:8])
-
     except ValueError:
-        messagebox.showerror("Error", "ID No. must only contain numbers.")
+        messagebox.showerror("Error", "I.D. No. must only contain numbers.")
         return
     else:
         try:
@@ -136,27 +124,16 @@ def add():
             messagebox.showerror("Error", "Student already exists.")
             return
 
-    nameEntry.delete(0, END)
-    idnumberEntry.delete(0, END)
-    courseEntry.delete(0, END)
-    yearEntry.delete(0, END)
-    genderEntry.delete(0, END)
-
+    clear()
     showall()
 
-def edit():
+def edit(): # Update a student
     selected_student = ""
     try:
         selected_item = view.selection()[0]
         selected_student = str(view.item(selected_item)['values'][0])
         decision = messagebox.askquestion("Warning", "Do you want to update the selected student?")
         if decision == "yes":
-            nameEntry.delete(0, END)
-            idnumberEntry.delete(0, END),
-            courseEntry.delete(0, END)
-            yearEntry.delete(0, END)
-            genderEntry.delete(0, END)
-
             selected = view.focus()
             values = view.item(selected, "values")
 
@@ -172,7 +149,7 @@ def edit():
         messagebox.showerror("Error", "Please select a student first to edit.")
         return
 
-def remove():
+def remove(): #Delete a student
     if not view.selection():
         messagebox.showerror('Error', 'Please select a student first to delete.')
 
@@ -189,7 +166,7 @@ def remove():
         else:
             return
 
-def save():
+def save(): # Save an updated student
     if not view.selection():
         messagebox.showerror('Error', 'Please edit a student first to save changes.')
         return
@@ -202,66 +179,88 @@ def save():
 
     try:
         if (a1 == '') or (a2 == '') or (a3 == '') or (a4 == '') or (a5 == ''):
-            messagebox.showerror("Error", "Please fill all the missing input.")
+            messagebox.showerror("Error", "Please select the edit button first to save changes.")
             return
-
         y = str(a1)
         y = str(y.replace('-', ''))
         a1 = int(y)
         a1 = str(a1)
         if len(a1) != 8:
-            messagebox.showerror("Error", "ID No. must be exactly 8 numbers.\nEX: 2020-0001")
+            messagebox.showerror("Error", "I.D. No. must be exactly 8 numbers.\n(Ex: 2020-1570)")
             return
         else:
             a1 = '%s-%s' % (a1[:4], a1[4:8])
 
     except ValueError:
-        messagebox.showerror("Error", "ID No. must only contain numbers.")
+        messagebox.showerror("Error", "I.D. No. must only contain numbers.")
         return
 
+
+    selected_student = ""
+
+    try:
+        selected_item = view.selection()[0]
+        selected_student = str(view.item(selected_item)['values'][0])
+    except:
+        messagebox.showinfo("Error", "Please edit a student first to save changes.")
+
+    idnumber = str(idnumberEntry.get())
+    name = str(nameEntry.get())
+    course = str(courseEntry.get())
+    year = str(yearEntry.get())
+    gender = str(genderEntry.get())
+
+    if (idnumber == "" or idnumber == " ") or (name == "" or name == " ") or (course == "" or course == " ") or (
+            year == "" or year == " ") or (gender == "" or gender == " "):
+        messagebox.showinfo("Error", "Please fill up the blank entry")
+        return
     else:
-        selected = view.focus()
-        values = view.item(selected)
-        selection = values["values"]
-        db.update(idnumberEntry.get(), nameEntry.get(), courseEntry.get(), yearEntry.get(), genderEntry.get(), selection[0])
-        messagebox.showinfo("Success", "Student has been updated successfully.")
-        clear()
-        showall()
-        return
+        try:
+            db.update(selected_student[0],idnumberEntry.get(),nameEntry.get(),courseEntry.get(),yearEntry.get(),genderEntry.get())
+            decision = messagebox.askquestion("Warning", "Do you want to save changes?")
+            if decision == "yes":
+                messagebox.showinfo("Success", "Student has been updated successfully.")
+        except:
+            messagebox.showinfo("Unsuccessful", "Updating student unsuccessful. Please try again.")
+            return
+    showall()
 
-def search():
+
+def search(): # Search a student by I.D. Number
 
     query = searchBy.get()
 
     if query == "":
-        messagebox.showerror("Error", "Please enter an ID No. first to search for student.")
+        messagebox.showerror("Error", "Please enter an I.D. No. first to search for a student.")
         return
-
     try:
-        if len(query) != 9:
-            messagebox.showerror("Error", "ID No. must be exactly 8 numbers.\nEX: 2020-0001")
+        y = str(query)
+        y = str(y.replace('-', ''))
+        query = int(y)
+        query = str(query)
+
+        if len(query) != 8:
+            messagebox.showerror("Error", "I.D. No. must be exactly 8 numbers.\n( Ex: 2020-1570 )")
             return
-        #else:
-            #query = '%s-%s' % (query[:4], query[4:8])
+        else:
+            query = '%s-%s' % (query[:4], query[4:8])
     except ValueError:
-        messagebox.showerror("Error", "Please enter only the ID No. to search for a student.")
+        messagebox.showerror("Error", "Please enter only the I.D. No. to search for a student.")
         return
 
     row = db.search(query)
-    print(row[0])
-
 
     if len(row) == 1:
         row = row[0]
-        row = f"{str(row[0])},{row[1]},{row[2]},{row[3]},{row[4]},{row[5]}" 
+        row = f"{str(row[0])},{row[1]},{row[2]},{row[3]},{row[4]},{row[5]}"
 
         view.delete(*view.get_children())
         view.insert("", "end", values=(row.split(",")))
         messagebox.showinfo("Success", "Student is found.")
         return
-                #view.insert(END, row, str(""))
+
     else:
-        messagebox.showerror("Error", "Student does not exists.")
+        messagebox.showerror("Error", "Student does not exists. Please try again.")
         return
 
 #===================================================================Buttons==================================================================================
@@ -278,7 +277,7 @@ editButton.place(x=543, y=90)
 saveButton = Button(content, text="Save", width=5, font=("Roboto", 10, "bold"), fg="#FFFFFF", bg="#7B9FCF", command=save)
 saveButton.place(x=602, y=90)
 #Show All Button
-displayButton = Button(subSearch, text="Refresh", width=8, font=("Roboto", 10, "bold"), fg="#FFFFFF", bg="#7B9FCF", command=refresh)
+displayButton = Button(subSearch, text="Refresh", width=8, font=("Roboto", 10, "bold"), fg="#FFFFFF", bg="#7B9FCF", command=showall)
 displayButton.place(x=730, y=10)
 #Search Button
 searchButton = Button(subSearch, text="Search", width=6, font=("Roboto", 10, "bold"), fg="#FFFFFF", bg="#7B9FCF", command=search)
@@ -301,12 +300,12 @@ view.heading(4, text="Course")
 view.heading(5, text="Year")
 view.heading(6, text="Gender")
 #Column Alignment
-view.column(1, width=10, anchor=CENTER)
-view.column(2, width=10, anchor=CENTER)
-view.column(3, width=60, anchor=W)
-view.column(4, width=10, anchor=CENTER)
-view.column(5, width=10, anchor=CENTER)
-view.column(6, width=10, anchor=CENTER)
+view.column(1, width=5, anchor=CENTER)
+view.column(2, width=5, anchor=CENTER)
+view.column(3, width=120, anchor=W)
+view.column(4, width=5, anchor=CENTER)
+view.column(5, width=5, anchor=CENTER)
+view.column(6, width=5, anchor=CENTER)
 #Scrollbar
 view.place(x=0, y=0, width=760, height=370)
 scrollx.config(command=view.yview)
