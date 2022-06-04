@@ -7,7 +7,7 @@ class Database:
         sql = """
         CREATE TABLE IF NOT EXISTS students(
             rollno Integer Primary Key,
-            idnumber Interger Not Null Unique,
+            idnumber Integer Not Null Unique,
             name text,
             course text,
             year text,
@@ -23,28 +23,28 @@ class Database:
                          (idnumber, name, course, year, gender))
         self.con.commit()
 
-    # Fetch all data 
+    # Fetch data
     def fetch(self):
         self.cur.execute("SELECT * from students")
         rows = self.cur.fetchall()
         # print(rows)
         return rows
 
-    # Delete data 
+    # Delete data
     def delete(self, rollno):
         self.cur.execute("delete from students where rollno=?", (rollno,))
         self.con.commit()
 
-    # Update data 
+    # Update data
     def update(self, rollno='', idnumber='', name='', course='', year='', gender=''):
         self.cur.execute(
             "update students set idnumber=?, name=?, course=?, year=?, gender=? where rollno=?",
             (idnumber, name, course, year, gender, rollno))
         self.con.commit()
-        
-    # Search for data
-    def search(self, idnumber = ""):
-        self.cur.execute("SELECT * FROM students WHERE idnumber=?", (idnumber,))
+    
+    # Search data
+    def search(self, idnumber =""):
+        self.cur.execute(f"SELECT * FROM students WHERE idnumber='{idnumber}'")
         rows = self.cur.fetchall()
         return rows
 
