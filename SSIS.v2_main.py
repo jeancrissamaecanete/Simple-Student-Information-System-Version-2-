@@ -167,9 +167,6 @@ def remove(): #Delete a student
             return
 
 def save(): # Save an updated student
-    if not view.selection():
-        messagebox.showerror('Error', 'Please edit a student first to save changes.')
-        return
 
     a1 = idnumberEntry.get()
     a2 = nameEntry.get()
