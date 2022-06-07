@@ -9,3 +9,6 @@ to manage student data with the following features:
 - Edit a student
 - Delete a student
 - Search a student 
+
+
+![](program_output.png)
