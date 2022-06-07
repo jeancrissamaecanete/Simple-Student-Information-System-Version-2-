@@ -11,4 +11,6 @@ to manage student data with the following features:
 - Search a student 
 
 
+### Output:
+
 ![](program_output.png)
