@@ -13,4 +13,4 @@ to manage student data with the following features:
 
 ### Output:
 
-![](program_output.png)
+![](output.png)
