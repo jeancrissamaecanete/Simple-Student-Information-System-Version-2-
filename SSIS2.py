@@ -281,8 +281,11 @@ def add2():
     if (b1 == '') or (b2 == ''):
         messagebox.showerror("Error", "Please fill all the missing input.")
         return
-    pattern = re.compile("^[a-zA-Z]+$")
+    pattern = re.compile("^[a-z A-Z]+$")
     if not pattern.match(b1):
+        messagebox.showerror("Error", "Course code must only contain letters.")
+        return
+     if not pattern.match(b2):
         messagebox.showerror("Error", "Course code must only contain letters.")
         return
 
@@ -382,7 +385,7 @@ def search2(): # Search Student
     if query1 == "":
         messagebox.showerror("Error", "Please enter a course code to search for a course.")
         return
-    pattern2 = re.compile("^[a-zA-Z]+$")
+    pattern2 = re.compile("^[a-z A-Z]+$")
     if not pattern2.match(query1):
         messagebox.showerror("Error", "Course code must only contain letters.")
         search_entry2.delete(0, END)
